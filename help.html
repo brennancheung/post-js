@@ -1,0 +1,424 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Help</title>
+	<style type="text/css" media="screen">
+		.word { border: 1px solid #000; background: #eee; margin-bottom: 10px; padding: 5px; }
+		.definition { font-weight: bolder; width: 100px; background: #ccf; width: 100%; }
+		.definition span { font-weight: lighter; margin-left: 5px; font-family: courier; font-size: 80%; }
+		.description { margin-left: 50px;}
+		.example { margin-left: 50px; background: #cfc; }
+		u { font-weight: bold; text-decoration: none; font-family: courier; font-size: 90%; }
+	</style>
+</head>
+<body>
+	<h1>Help</h1>
+	
+	<p>This language is based a lot on the Factor programming language.  I do not attempt to completely describe everything here.  It is assumed you are already familiar with stack based programming.  For an good introduction look into Forth or Factor.</p>
+	
+	<div class="word">
+		<div class="definition"><u>+ - * / mod</u> <span>( n1 n2 -- n3 )</span></div>
+		<div class="description">
+			plus, minus, multiply, divide and modulus.  Works the same as they do on a <a href="http://en.wikipedia.org/wiki/Reverse_Polish_notation" target="_blank">Reverse Polish Notation</a> calculator.
+		</div>
+		<div class="example">
+			<code>
+				5 7 + --> 12 <br/>
+				3 6 - --> -3 <br/>
+				1 2 3 4 + * - --> 13
+			</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>< > = != <= >=</u>  <span>( n1 n2 -- ? )</span></div>
+		<div class="description">
+			Conditionals that take 2 items off the stack and return true or false
+		</div>
+		<div class="example">
+			<code>
+				5 7 > --> false <br/>
+				3 3 = --> true <br/>
+			</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>>r</u>  <span>( x -- )</span></div>
+		<div class="description">
+			Pops the top item off the stack and pushes it onto the reserve stack.  The reserve stack is like a temp stack if you need to shuffle around variables.
+		</div>
+		<div class="example">
+			<code>5 7 1 >r + r> --> 12 1</code>
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>r></u>  <span>( -- x)</span></div>
+		<div class="description">
+			Pops the top item off the reserve stack and pushes it onto the regular stack.  The reserve stack is like a temp stack if you need to shuffle around variables.
+		</div>
+		<div class="example">
+			<code>5 7 1 >r + r> --> 12 1</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>>>@</u> <span>( element attr str -- )</span></div>
+		<div class="description">
+			Sets the attribute (attr) of the element (element) to str.  This is implemented in javascript as <code>element.setAttribute(attr, str)</code>
+		</div>
+		<div class="example">
+			<code>#myImage "id" "alt" "some image" >>@</code>
+			<br/>
+			Do not confuse this with <u>>>style</u> which is used to set the style of DOM elements.
+			<br/>
+			Even though you give an element an id it will not be able to be accessed by <u>#</u> until you add it to the DOM document.
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>>>style</u> <span>( element st str -- )</span></div>
+		<div class="description">
+			Sets the style (st) of the element (element) to str.  This is implemented in javascript as <code>element.style.st = str</code>
+		</div>
+		<div class="example">
+			<code>#sandbox "background" "red" >>style</code>
+			<br/>
+			See also <u>>>@</u> if you want to set non-style attributes of a DOM element.
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>#</u> <span>( str -- element )</span></div>
+		<div class="description">
+			Gets an element from the DOM and pushes it onto the stack.  This is equivalent of javascript's <code>document.getElementById(str)</code>.
+		</div>
+		<div class="example">
+			<code>#sandbox</code> will get the sandbox div from the DOM and push it onto the stack.
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>.</u> <span>( x -- )</span></div>
+		<div class="description">
+			Pops an item off the stack and displays it.  This can be any type, doesn't need to be a string.
+		</div>
+		<div class="example">
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>.s</u> <span>( -- )</span></div>
+		<div class="description">
+			Displays the contents of the stack in the output area.  This has no effect on the stack.
+		</div>
+		<div class="example">
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>append</u> <span>( str1 str2 -- str1+str2 )</span></div>
+		<div class="description">
+			Takes 2 strings and appends (concatenation) them together.
+		</div>
+		<div class="example">
+			<code>
+				"hello " "world" append --> "hello world"
+			</code>
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>appendChild</u> <span>( src_element child_element -- )</span></div>
+		<div class="description">
+			Adds the child_element to the src_element. 
+		</div>
+		<div class="example">
+			<code>
+				#sandbox "img" createElement "id" "myChildElement" >>@ appendChild
+			</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>call</u> <span>( quot -- )</span></div>
+		<div class="description">
+			Takes a quotation off the stack and executes it as if you typed it without the [ ].
+		</div>
+		<div class="example">
+			<code>
+				[ "hello" print ] call
+			</code>
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>clear</u> <span>( ... -- )</span></div>
+		<div class="description">
+			Clears the stack so there is nothing on it.
+		</div>
+		<div class="example">
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>clone</u> <span>( x -- x x )</span></div>
+		<div class="description">
+			Duplicates the last item on the stack.
+		</div>
+		<div class="example">
+			This is the same as <u>dup</u> except for the fact that quotations are copied by value instead of by reference.  This makes it so when you modify a copy of the quotation the original isn't modified as well.
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>cls</u> <span>( -- )</span></div>
+		<div class="description">
+			Clears the output area.  This does not affect the stack in any way.
+		</div>
+		<div class="example">
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>createElement</u> <span>( str -- element )</span></div>
+		<div class="description">
+			Creates an HTML/DOM element of type str.  This is the same as javascript's <code>document.createElement(str)</code>
+		</div>
+		<div class="example">
+			When you create an element you typically need to give it an id and add it to the DOM.  Without adding it to the DOM there is no way to access it unless you still have a reference to it somewhere.
+			<br/><br/>
+			To give an element an id you can do something like <code>"img" createElement "id" "myImage" >>@</code>
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>drop</u> <span>( x -- )</span></div>
+		<div class="description">
+			Removes an item off the stack.
+		</div>
+		<div class="example">
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>dup</u> <span>( x -- x x )</span></div>
+		<div class="description">
+			Duplicates the last item on the stack.
+		</div>
+		<div class="example">
+			Performing a <u>dup</u> on a quotation will result in a copy by reference not by value.  If you modify the duplicate the other instances of it will change simultaneously.  If you don't want this use <u>clone</u> to make a copy of it that is unique.
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>help</u> <span>( -- )</span></div>
+		<div class="description">
+			Brings up this page.
+		</div>
+		<div class="example">
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>each</u> <span>( quot1 quot2 -- )</span></div>
+		<div class="description">
+			Applies quot2 to every element of quot1.  This works the same as each in functional languages.
+		</div>
+		<div class="example">
+			<code>[ "one" "two" "three" ] [ print ] each</code> will execute print on one, two, three in order.  It is the equivalent of <code>"one" print "two" print "three" print.</code>
+			<br/>
+			You may also be interested in <u>map</u> which does something similar but keeps the results in the quotations.
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>even?</u> <span>( num -- ? )</span></div>
+		<div class="description">
+			Takes a numeric off the stack and true or false onto the stack depending on if it is even or odd.
+		</div>
+		<div class="example">
+			<code>5 even? --> false</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>odd?</u> <span>( num -- ? )</span></div>
+		<div class="description">
+			Takes a numeric off the stack and true or false onto the stack depending on if it is even or odd.
+		</div>
+		<div class="example">
+			<code>5 odd? --> true</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>if</u> <span>( ? [ trueQuot ] [ falseQuot ] -- )</span></div>
+		<div class="description">
+			Depending on the boolean on the stack it will either execute the trueQuot or the falseQuot.
+		</div>
+		<div class="example">
+			<code>true [ "yes" ] [ "no" ] print</code> will print yes
+		</div>
+	</div>
+		
+	<div class="word">
+		<div class="definition"><u>map</u> <span>( quot1 quot2 -- )</span></div>
+		<div class="description">
+			Applies quot2 to every element of quot1 and replacing the original elements with the results.  This works the same as each in functional languages.
+		</div>
+		<div class="example">
+			<code>[ 1 2 3 4 5 ] [ sq ] map --> [ 1 4 9 16 25 ]</code>
+			<br/>
+			You may also be interested in <u>each</u> which does something similar but pushes the result onto the stack instead of replacing the results.
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>num>string</u> <span>( num -- str )</span></div>
+		<div class="description">
+			Converts a number (float or fixnum) to a string.
+		</div>
+		<div class="example">
+			<code>5.5 num>string --> "5.5"</code>
+			<br/>
+			See also, <u>string>fixnum</u> and <u>string>num</u>.
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>over</u> <span>( x y -- x y x )</span></div>
+		<div class="description">
+			Like <u>dup</u> but duplicates the value before the last one.
+		</div>
+		<div class="example">
+			<code>1 2 over --> 1 2 1</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>print</u> <span>( str -- )</span></div>
+		<div class="description">
+			Takes a string off the stack and prints it.
+		</div>
+		<div class="example">
+			A string is the only valid type that can be printed.  Numeric values can be converted to strings by using <u>num>string</u>.
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>save-word</u> <span>( str -- )</span></div>
+		<div class="description">
+			Takes a word and saves it to the remote database.
+		</div>
+		<div class="example">
+			If <code>hello</code> is the name of a word you can do <code>"hello" save-word</code>
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>sq</u> <span>( num -- num*num )</span></div>
+		<div class="description">
+			Squares the number on the stack.
+		</div>
+		<div class="example">
+			<code>5 sq --> 25</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>string>fixnum</u> <span>( str -- num )</span></div>
+		<div class="description">
+			Takes a string and converts it to a fixnum.  Floating point numbers are rounded down.
+		</div>
+		<div class="example">
+			<code>"5.5" string>fixnum --> 5</code>
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>string>num</u> <span>( str -- num )</span></div>
+		<div class="description">
+			Takes a string and converts it to a number.  The resulting item on the stack will other be float or fixnum.
+		</div>
+		<div class="example">
+			<code>"5.5" string>fixnum --> 5.5</code>
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>sum</u> <span>( quot -- num )</span></div>
+		<div class="description">
+			Takes a quotation and returns the sum of the items.  All the items must be numeric or sum will fail.
+		</div>
+		<div class="example">
+			<code>[ -1 2.5 3 4 5 ] sum --> 13.5</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>swap</u> <span>( x y -- y x )</span></div>
+		<div class="description">
+			Swaps the order of the last 2 items on the stack.
+		</div>
+		<div class="example">
+			<code>1 2 swap --> 2 1</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>reverse</u> <span>( quot -- rQuot )</span></div>
+		<div class="description">
+			Reverses the order of the items in a quotation, keeping them in the quotation.
+		</div>
+		<div class="example">
+			<code>[ 1 2 3 4 5 ] reverse --> [ 5 4 3 2 1 ]</code>
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>times</u> <span>( num quot -- )</span></div>
+		<div class="description">
+			Executes the quotation num times.
+		</div>
+		<div class="example">
+			<code>1 8 [ 2 * ] times --> 256</code><br/>
+			<code>5 [ "hello there" print]</code> will print "hello there" 5 times
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>type</u> <span>( x -- type )</span></div>
+		<div class="description">
+			Outputs the type of the top element on the stack.  Some possible values are fixnum, float, boolean, quotation, string.
+		</div>
+		<div class="example">
+		</div>
+	</div>
+
+	<div class="word">
+		<div class="definition"><u>undefine-word</u> <span>( str -- )</span></div>
+		<div class="description">
+			Removes a word from the current vocabulary.
+		</div>
+		<div class="example">
+			If you want to remove a word from the remote database use <code>undefine-word-db</code>
+		</div>
+	</div>
+	
+	<div class="word">
+		<div class="definition"><u>while</u> <span>( boolQuot loopQuot -- )</span></div>
+		<div class="description">
+			Takes a quotation that returns a boolean and while that is true it will execute loopQuot.
+		</div>
+		<div class="example">
+			5 [ dup 0 > ] [ dup num>string " is greater than 0" append print 1 - ] while
+		</div>
+	</div>
+	
+	
+</body>
+</html>
